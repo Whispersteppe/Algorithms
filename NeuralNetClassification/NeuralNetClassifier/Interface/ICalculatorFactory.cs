@@ -16,10 +16,10 @@ namespace NeuralNetClassifier.Interface
         List<Type> NodeCalculatorTypes { get; }
         List<Type> ConnectionCalculatorTypes { get; }
 
-        bool AddCalculatorType(Type type);
-        bool AddCalculatorTypes(Assembly assembly);
+        bool RegisterCalculator(Type type);
+        bool RegisterCalculator(Assembly assembly);
 
-        bool AddCalculatorType(ExternalCalculatorType type);
+        bool RegisterCalculator(ExternalCalculatorType type);
 
 
 

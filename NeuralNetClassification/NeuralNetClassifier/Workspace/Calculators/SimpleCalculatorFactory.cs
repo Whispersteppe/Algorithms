@@ -11,7 +11,7 @@ using NeuralNetClassifier.Models;
 
 namespace NeuralNetClassifier.Workspace.Calculators
 {
-    public class CalculatorFactory : ICalculatorFactory
+    public class SimpleCalculatorFactory : ICalculatorFactory
     {
         Dictionary<string, Type> _nodeCalculatorTypeCache;
         Dictionary<string, Type> _connectionCalculatorTypeCache;
@@ -22,7 +22,7 @@ namespace NeuralNetClassifier.Workspace.Calculators
         /// </summary>
         /// <param name="assemblyNames"></param>
         /// <param name="types"></param>
-        public CalculatorFactory(List<string>? assemblyNames = null, List<Type>? types = null, List<string> ignoreAssemblies = null) 
+        public SimpleCalculatorFactory(List<Type>? types = null) 
         { 
             _connectionCalculatorTypeCache = new Dictionary<string, Type>();
             _nodeCalculatorTypeCache = new Dictionary<string, Type>();
@@ -36,51 +36,6 @@ namespace NeuralNetClassifier.Workspace.Calculators
                     RegisterCalculator(type);
                 }
             }
-
-            List<string> _assemblyNames = new List<string>();
-            if (ignoreAssemblies != null)
-            {
-                _assemblyNames.AddRange(ignoreAssemblies);
-            }
-
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                if (_assemblyNames.Contains(assembly.GetName().Name) == true) continue;
-
-                Debug.WriteLine(assembly.GetName().Name);
-
-                _assemblyNames.Add(assembly.GetName().Name);
-
-                if (_assemblyCache.ContainsKey(assembly.Location) == false)
-                {
-
-                    //  load items from existing assemblies
-                    if (RegisterCalculator(assembly) == true)
-                    {
-
-                        _assemblyCache.Add(assembly.Location, assembly);
-                    }
-                }
-            }
-
-
-
-            if (assemblyNames != null)
-            {
-
-                foreach (string assemblyName in assemblyNames)
-                {
-                    if (_assemblyCache.ContainsKey(assemblyName) == false)
-                    {
-                        //  wwe don't have it.  
-                        Assembly assembly = Assembly.LoadFrom(assemblyName);
-                        _assemblyCache.Add(assembly.Location, assembly);
-
-                        RegisterCalculator(assembly);
-                    }
-
-                }
-            }
         }
 
         /// <summary>
@@ -89,15 +44,7 @@ namespace NeuralNetClassifier.Workspace.Calculators
         /// <param name="assembly"></param>
         public bool RegisterCalculator(Assembly assembly)
         {
-            bool addedTypes = false;
-
-            foreach (Type type in assembly.GetTypes())
-            {
-                addedTypes = RegisterCalculator(type) || addedTypes;
-            }
-
-            return addedTypes;
-
+            throw new NotImplementedException("WWe're not doing external types");
         }
 
         /// <summary>
@@ -195,24 +142,8 @@ namespace NeuralNetClassifier.Workspace.Calculators
 
         public bool RegisterCalculator(ExternalCalculatorType type)
         {
-            bool addedType = false;
+            throw new NotImplementedException("WWe're not doing external types");
 
-            if (_connectionCalculatorTypeCache.ContainsKey(type.CalculatorTypeName) || _nodeCalculatorTypeCache.ContainsKey(type.CalculatorTypeName))
-            {
-                // we've already got the cache.  
-            }
-
-            if (_assemblyCache.ContainsKey(type.AssemblyPath) == false)
-            {
-                //  wwe don't have it.  
-                Assembly assembly = Assembly.LoadFrom(type.AssemblyPath);
-                _assemblyCache.Add(assembly.Location, assembly);
-
-                RegisterCalculator(assembly);
-                addedType = true;
-            }
-
-            return addedType;
         }
 
 
